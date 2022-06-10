@@ -4,12 +4,13 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 import time
+import json
 
 
 
 def findProducts(productListUrl):
     opts = Options()
-    opts.add_argument('-—headless')
+    opts.headless = True
     driver = webdriver.Chrome(options=opts)
 
     driver.get(productListUrl)
@@ -32,6 +33,7 @@ def findProducts(productListUrl):
 
 
 def appendUrl(url):
+    print("Getting URL: {}".format(url))
     page = requests.get(url)
 
     soup = BeautifulSoup(page.content, 'html.parser')
@@ -55,5 +57,16 @@ def appendUrl(url):
             print("Url Added")
         
 
+def loadCategories():
+    with open('categories.json') as json_file:
+        data = json.load(json_file)
+        i = 0
+        for key, value in data.items():
+            i += 1
+            print("Finding Item {} of {}".format(i,len(data)))
+            findProducts(value)
+        
 
-findProducts("https://www.alibaba.com/trade/search?fsb=y&IndexArea=product_en&CatId=&SearchText=hot+sale&selectedTab=product_en")
+# findProducts("https://www.alibaba.com/catalog/other-agriculture-products_cid135")
+
+loadCategories()
