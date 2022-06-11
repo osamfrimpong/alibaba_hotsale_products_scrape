@@ -3,7 +3,7 @@ import requests
 from bs4 import BeautifulSoup
 import json
 
-def parser():
+def categories():
     url = 'https://www.alibaba.com/Products'
     source_code = requests.get(url)
     plain_text = source_code.text
@@ -24,4 +24,4 @@ def parser():
 
 
 with open('categories.json', 'w') as f:
-    json.dump(parser(), f)
+    json.dump(categories(), f)

@@ -4,7 +4,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 import time
-
+import json
 
 
 
@@ -29,11 +29,6 @@ def findProducts(productListUrl):
     for i in items:
         appendUrl(i.get_attribute("href"))
 
-    # Move to next page
-    next_page_link = paginationLink(productListUrl)
-    if next_page_link != False:
-        findProducts(next_page_link)
-    
     driver.close()
 
 
@@ -60,29 +55,18 @@ def appendUrl(url):
             f.write(url+',\n')
             f.close()
             print("Url Added")
+        
 
-def paginationLink(startUrl):
+def loadCategories():
+    with open('categories.json') as json_file:
+        data = json.load(json_file)
+        i = 0
+        for key, value in data.items():
+            i += 1
+            print("Finding Item {} of {}".format(i,len(data)))
+            findProducts(value)
+        
 
-    opts = Options()
-    opts.headless = True
-    driver = webdriver.Chrome(options=opts)
+# findProducts("https://www.alibaba.com/catalog/other-agriculture-products_cid135")
 
-    driver.get(startUrl)
-
-    time.sleep(2)
-
-    driver.execute_script("window.scrollTo(0, document.body.scrollHeight)")
-
-    pages = driver.find_element(by=By.CLASS_NAME, value="seb-pagination__pages")
-
-    active = pages.find_element(by=By.CLASS_NAME, value="active")
-
-    try:
-        sibling = active.find_element(by=By.XPATH, value=".//following-sibling::a[@class='seb-pagination__pages-link']")
-    
-        print("Next Page Url: {}".format(sibling.get_attribute("href")))
-        return sibling.get_attribute("href")
-    except:
-        return False
-
-findProducts("https://www.alibaba.com/catalog/alcoholic-beverages_cid204?spm=a2700.galleryofferlist_catalog.0.0.5c6434bcKhKZ4e&page=1&CatId=204&viewtype=G")
+loadCategories()
