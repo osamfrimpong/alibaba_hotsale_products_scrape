@@ -4,14 +4,16 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 import time
+import os
 
+script_dir = os.path.dirname(os.path.realpath(__file__))
+chrome_driver_path = os.path.join(script_dir, "chromedriver.exe")
 
-
+opts = Options()
+opts.headless = True
+driver = webdriver.Chrome(options=opts,executable_path=chrome_driver_path)
 
 def findProducts(productListUrl):
-    opts = Options()
-    opts.headless = True
-    driver = webdriver.Chrome(options=opts)
 
     driver.get(productListUrl)
 
@@ -62,10 +64,6 @@ def appendUrl(url):
             print("Url Added")
 
 def paginationLink(startUrl):
-
-    opts = Options()
-    opts.headless = True
-    driver = webdriver.Chrome(options=opts)
 
     driver.get(startUrl)
 
